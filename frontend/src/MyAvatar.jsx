@@ -35,18 +35,80 @@ export function Model({ modelUrl = '/models/myAvatar.glb', ...props }) {
   // -- 1. Setup & Discovery (MULTI-MESH) --
   const meshesRef = useRef([])
   const vowelsRef = useRef([])
+  const headRef = useRef(null)  // For greeting animation
 
   useEffect(() => {
     const foundMeshes = []
     console.log("Scanning new model for ALL valid meshes...")
 
     Object.values(nodes).forEach((node) => {
+      // 1. Find Meshes for Morphs
       if (node.isMesh && node.morphTargetDictionary) {
         const keys = Object.keys(node.morphTargetDictionary)
-        // Fingerprint: Look for Mouth morphs
         if (keys.includes("Fcl_MTH_A") || keys.includes("Mouth_A")) {
           console.log("VALID MESH FOUND:", node.name)
           foundMeshes.push(node)
+        }
+      }
+
+      // 2. POSE FIX: Fuzzy Search for Arm Bones
+      // Checks for "Left" or "L_" AND "Arm" (case insensitive)
+      if (node.isBone || node.type === "Bone") {
+        const name = node.name.toLowerCase()
+
+        const isLeft = name.includes("left") || name.includes("_l_") || name.startsWith("l_")
+        const isRight = name.includes("right") || name.includes("_r_") || name.startsWith("r_")
+
+        // Detect different body parts
+        const isArm = name.includes("arm") && !name.includes("fore") && !name.includes("hand") && !name.includes("clavicle") && !name.includes("shoulder")
+        const isLeg = (name.includes("leg") || name.includes("thigh")) && !name.includes("lower") && !name.includes("calf")
+        const isHand = name.includes("hand") || name.includes("wrist")
+
+        // A. Arms - Natural relaxed position
+        if (isArm) {
+          if (isLeft) {
+            node.rotation.z = -Math.PI / 3.2   // More natural (~56 degrees)
+            node.rotation.y = -Math.PI / 12
+            node.rotation.x = Math.PI / 16
+            console.log("POSE: Left Arm:", node.name)
+          }
+          if (isRight) {
+            node.rotation.z = Math.PI / 3.2
+            node.rotation.y = Math.PI / 12
+            node.rotation.x = Math.PI / 16
+            console.log("POSE: Right Arm:", node.name)
+          }
+        }
+
+        // B. Legs - Natural narrow stance
+        if (isLeg) {
+          if (isLeft) {
+            node.rotation.z = -Math.PI / 36   // Very slight (~5 degrees)
+            console.log("POSE: Left Leg:", node.name)
+          }
+          if (isRight) {
+            node.rotation.z = Math.PI / 36
+            console.log("POSE: Right Leg:", node.name)
+          }
+        }
+
+        // C. Hands - Gentle natural curl
+        if (isHand) {
+          if (isLeft) {
+            node.rotation.x = Math.PI / 12    // Gentle curl
+            console.log("POSE: Left Hand:", node.name)
+          }
+          if (isRight) {
+            node.rotation.x = Math.PI / 12
+            console.log("POSE: Right Hand:", node.name)
+          }
+        }
+
+        // D. Head - Store for greeting animation (Avatar 2 only)
+        const isHead = name.includes("head") || name.includes("neck")
+        if (isHead && !headRef.current) {
+          headRef.current = node
+          console.log("HEAD BONE FOUND:", node.name)
         }
       }
     })
@@ -126,6 +188,14 @@ export function Model({ modelUrl = '/models/myAvatar.glb', ...props }) {
         })
       }
     })
+
+    // C. Greeting Animation (Avatar 2 Only) - Head Nod
+    if (modelUrl.includes('avatar2') && headRef.current) {
+      // Gentle nod: slow sine wave on X-axis (pitch)
+      const nodSpeed = 0.8  // Slow, welcoming nod
+      const nodAmount = Math.sin(t * nodSpeed) * 0.15  // ~8.5 degrees max
+      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, nodAmount, 0.1)
+    }
   })
 
   // -- 3. Scripted Demo --
