@@ -257,6 +257,22 @@
   color: var(--text-muted);
 }
 
+.dashboard-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.dashboard-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
 /* Avatar Picker */
 .avatar-picker {
   display: flex;

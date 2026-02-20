@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiPlay, FiUser, FiBriefcase, FiBookOpen } from "react-icons/fi";
+import { FiPlay, FiUser, FiBriefcase, FiBookOpen, FiGrid } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { ROLES, EXPERIENCE_LEVELS, TOPICS, AVATARS } from "@/constants/prompts";
 
 export default function LandingPage() {
@@ -108,6 +109,11 @@ export default function LandingPage() {
         <p className="landing-footer">
           Powered by Google Gemini AI &bull; Your data stays in your browser
         </p>
+
+        <Link to="/dashboard" className="dashboard-link">
+          <FiGrid size={16} />
+          <span>Go to Dashboard</span>
+        </Link>
       </div>
     </div>
   );
