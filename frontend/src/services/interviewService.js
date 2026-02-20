@@ -1,11 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const API_KEY = "AIzaSyA1dY36uCLETAbBnmOCBFyj--YSsl8aOFI";
+const API_KEY = "AIzaSyCf3XBeMWcHoGnHUB9Hvg-o-giBgq0g5UY";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-const MODEL_NAME = "gemini-2.0-flash"; // 1500 RPD free tier (vs 20 RPD for 2.5-flash)
+const MODEL_NAME = "gemini-2.5-flash";
 
-// Retry helper for 429 rate-limit errors
+// Retry helper for 429 rate-limit errors (longer delays to respect quota reset)
 async function withRetry(fn, maxRetries = 3) {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
@@ -13,7 +13,9 @@ async function withRetry(fn, maxRetries = 3) {
         } catch (error) {
             const is429 = error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("exceeded");
             if (is429 && attempt < maxRetries) {
-                const delay = Math.pow(2, attempt) * 2000; // 2s, 4s, 8s
+                // Parse retry delay from error if available, otherwise use exponential backoff
+                const retryMatch = error?.message?.match(/retry in ([\d.]+)s/i);
+                const delay = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) * 1000 : Math.pow(2, attempt) * 15000; // 15s, 30s, 60s
                 console.warn(`Rate limited. Retrying in ${delay / 1000}s... (attempt ${attempt + 1}/${maxRetries})`);
                 await new Promise(r => setTimeout(r, delay));
                 continue;
