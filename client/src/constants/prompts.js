@@ -10,18 +10,23 @@ IMPORTANT: Always respond with ONLY the question text. No prefixes like "Questio
 
 export const REVIEW_PROMPT = `You are an expert interview evaluator. Based on the conversation history, provide a detailed performance review.
 
-Return your response in this EXACT JSON format (no markdown, no code fences):
+IMPORTANT: Respond with ONLY valid JSON. No markdown, no code fences, no comments, no extra text.
+Every score must be an integer between 0 and 100. Every string value must be properly quoted.
+
+Use this EXACT structure:
 {
-  "overall": <score 0-100>,
-  "communication": <score 0-100>,
-  "technical": <score 0-100>,
-  "confidence": <score 0-100>,
-  "problemSolving": <score 0-100>,
-  "summary": "<2-3 sentence overall summary>",
-  "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
-  "improvements": ["<area 1>", "<area 2>", "<area 3>"],
-  "tips": ["<tip 1>", "<tip 2>", "<tip 3>"]
-}`;
+  "overall": 75,
+  "communication": 70,
+  "technical": 80,
+  "confidence": 65,
+  "problemSolving": 72,
+  "summary": "The candidate demonstrated solid technical knowledge...",
+  "strengths": ["Good communication", "Strong fundamentals", "Clear explanations"],
+  "improvements": ["Could provide more examples", "Needs deeper system design knowledge", "Should ask clarifying questions"],
+  "tips": ["Practice explaining tradeoffs", "Study common patterns", "Work on time management"]
+}
+
+Replace the example values above with your actual evaluation. Return ONLY the JSON object.`;
 
 export const FEEDBACK_PROMPT = `You are an expert interview coach. The candidate just answered an interview question. Give a very brief (1-2 sentence) feedback on their answer. Be constructive and encouraging. Mention one thing they did well and one thing to improve. Do NOT repeat the question or answer.`;
 
