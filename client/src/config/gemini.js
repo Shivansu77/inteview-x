@@ -13,7 +13,5 @@ export const MODEL_NAME = import.meta.env.VITE_GEMINI_MODEL || "gemini-2.5-flash
 
 // Fallback models — each has its own separate free-tier quota pool
 export const FALLBACK_MODELS = [
-  MODEL_NAME,
-  "gemini-2.0-flash",
-  "gemini-1.5-flash",
+  ...new Set([MODEL_NAME, "gemini-2.5-flash", "gemini-1.5-flash"]),
 ];

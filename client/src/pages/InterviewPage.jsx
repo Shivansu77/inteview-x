@@ -226,7 +226,10 @@ export default function InterviewPage() {
             <color attach="background" args={["#0f0f14"]} />
 
             <Suspense fallback={null}>
-              <group position={[0, -1.4, 0]} scale={1.15}>
+              <group
+                position={avatarUrl?.includes("avatar2") ? [0, -1.6, 0] : [0, -1.4, 0]}
+                scale={avatarUrl?.includes("avatar2") ? 1.3 : 1.15}
+              >
                 <MyAvatar
                   key={avatarUrl}
                   modelUrl={avatarUrl}

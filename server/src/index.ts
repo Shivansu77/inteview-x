@@ -3,14 +3,16 @@ import express from "express";
 import cors from "cors";
 import type { Request, Response } from "express";
 import { connectDb } from "./config/db";
+import { User } from "./models/user.model";
 import { routes } from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 
-// Connect to database
+// Connect to database and create tables
 const start = async () => {
   try {
     await connectDb();
-    console.log("✅ Database connected");
+    await User.init();
+    console.log("✅ Database connected & tables ready");
   } catch (err) {
     console.error("❌ Database connection failed:", err);
     process.exit(1);

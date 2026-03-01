@@ -1,13 +1,17 @@
-import mongoose from "mongoose";
+import { Pool } from "pg";
+
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 export const connectDb = async (): Promise<void> => {
-  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/interviewace";
-
   try {
-    await mongoose.connect(uri);
-    console.log("✅ MongoDB connected successfully");
+    const client = await pool.connect();
+    console.log("✅ PostgreSQL (Supabase) connected successfully");
+    client.release();
   } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
+    console.error("❌ PostgreSQL connection error:", error);
     process.exit(1);
   }
 };

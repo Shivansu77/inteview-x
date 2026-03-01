@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { getUsers, registerUser } from "../controllers/user.controller";
+import { getUsers } from "../controllers/user.controller";
+import { authenticate, authorize } from "../middleware/auth";
 
 export const userRoutes = Router();
 
-userRoutes.get("/", getUsers);
-userRoutes.post("/register", registerUser);
+// Protected: only authenticated admins can list all users
+userRoutes.get("/", authenticate, authorize("admin"), getUsers);
