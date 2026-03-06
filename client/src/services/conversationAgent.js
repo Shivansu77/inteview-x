@@ -123,9 +123,9 @@ export function createConversationAgent() {
   let _history = [];
 
   function trackTopic(topic) {
-    const normalised = topic.toLowerCase().trim();
-    if (!_topicsCovered.includes(normalised)) {
-      _topicsCovered.push(normalised);
+    const normalized = topic.toLowerCase().trim();
+    if (!_topicsCovered.includes(normalized)) {
+      _topicsCovered.push(normalized);
     }
   }
 
@@ -275,6 +275,7 @@ export function createConversationAgent() {
 
         text = text.replace(/,\s*([}\]])/g, "$1");
         text = text.replace(/\/\/[^\n]*/g, "");
+        // LLM sometimes outputs placeholder tags like <score 0-100>; replace with default score
         text = text.replace(/<[^>]+>/g, "70");
 
         _phase = PHASE.ENDED;
