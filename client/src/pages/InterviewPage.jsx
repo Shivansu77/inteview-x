@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, Suspense } from "react
 import { useLocation, useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
-import { FiMic, FiMicOff, FiSquare, FiArrowLeft, FiPlay, FiRefreshCw } from "react-icons/fi";
+import { FiMic, FiMicOff, FiSquare, FiArrowLeft, FiPlay, FiRefreshCw, FiSend, FiHelpCircle } from "react-icons/fi";
 
 // Components
 import { Model as MyAvatar } from "@/components/avatar/MyAvatar";
@@ -13,13 +13,11 @@ import DetailedReviewModal from "@/components/review/DetailedReviewModal";
 // Constants
 import { AVATARS } from "@/constants/prompts";
 
-// Services
-import {
-  startInterview,
-  getNextQuestion,
-  getAnswerFeedback,
-  generateReview,
-} from "@/services/interview.service";
+// Agent
+import { createConversationAgent } from "@/services/conversationAgent";
+
+// Services (still used for legacy review fallback)
+import { generateReview } from "@/services/interview.service";
 
 // Hooks
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
@@ -44,6 +42,13 @@ export default function InterviewPage() {
   const [questionCount, setQuestionCount] = useState(0);
   const [showDetailedReview, setShowDetailedReview] = useState(false);
 
+  // Agent state
+  const agentRef = useRef(null);
+  const [agentPhase, setAgentPhase] = useState("idle");
+
+  // Text input state
+  const [textInput, setTextInput] = useState("");
+
   // Avatar state
   const [speaking, setSpeaking] = useState(false);
   const [emotion, setEmotion] = useState(0);
@@ -53,6 +58,7 @@ export default function InterviewPage() {
 
   // Refs
   const chatEndRef = useRef(null);
+  const textInputRef = useRef(null);
 
   // Custom hooks
   const { isListening, transcript, setTranscript, startListening, stopListening, cleanup: cleanupMic } =
@@ -80,7 +86,7 @@ export default function InterviewPage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // BEGIN INTERVIEW
+  // BEGIN INTERVIEW — initialise the conversational agent
   const beginInterview = useCallback(async () => {
     warmUp();
     setHasBegun(true);
@@ -88,15 +94,19 @@ export default function InterviewPage() {
     setEmotion(3);
 
     try {
-      const question = await startInterview(role, experience, topic);
-      const msg = { role: "interviewer", text: question };
+      const agent = createConversationAgent();
+      agentRef.current = agent;
+
+      const greeting = await agent.init({ role, experience, topic });
+      const msg = { role: "interviewer", text: greeting, type: "question" };
       setMessages([msg]);
-      setQuestionCount(1);
-      await speakText(question);
+      setQuestionCount(agent.questionCount);
+      setAgentPhase(agent.phase);
+      await speakText(greeting);
     } catch (err) {
       console.error("Start interview error:", err);
       const fallback = `Hello! I had trouble connecting to the AI (${err.message}). Please check your API key/rate limit and try again.`;
-      setMessages([{ role: "interviewer", text: fallback }]);
+      setMessages([{ role: "interviewer", text: fallback, type: "error" }]);
       await speakText(fallback);
     }
 
@@ -114,32 +124,63 @@ export default function InterviewPage() {
     }
   };
 
-  // Submit user answer
+  // Handle text input submission
+  const handleTextSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = textInput.trim();
+    if (!trimmed || isLoading || speaking || isInterviewEnded) return;
+    setTextInput("");
+    submitAnswer(trimmed);
+  };
+
+  // Submit user answer via the conversational agent
   const submitAnswer = async (answerText) => {
-    const userMsg = { role: "candidate", text: answerText };
-    const updatedMessages = [...messages, userMsg];
-    setMessages(updatedMessages);
+    const agent = agentRef.current;
+    if (!agent) return;
+
+    const userMsg = { role: "candidate", text: answerText, type: "answer" };
+    setMessages((prev) => [...prev, userMsg]);
     setTranscript("");
     setIsLoading(true);
 
     try {
-      const lastQuestion = messages.filter((m) => m.role === "interviewer").pop()?.text || "";
-      const feedback = await getAnswerFeedback(lastQuestion, answerText);
-      const nextQuestion = await getNextQuestion(updatedMessages);
+      // Get agent's response + feedback in parallel
+      const [agentResponse, feedback] = await Promise.all([
+        agent.respond(answerText),
+        agent.getLastFeedback().catch(() => ""),
+      ]);
 
-      setFeedbacks((prev) => [...prev, feedback]);
+      if (feedback) setFeedbacks((prev) => [...prev, feedback]);
 
-      const aiMsg = { role: "interviewer", text: nextQuestion };
+      const aiMsg = { role: "interviewer", text: agentResponse.message, type: agentResponse.type };
       setMessages((prev) => [...prev, aiMsg]);
-      setQuestionCount((prev) => prev + 1);
+      setQuestionCount(agent.questionCount);
+      setAgentPhase(agent.phase);
 
-      await speakText(nextQuestion);
+      await speakText(agentResponse.message);
     } catch (err) {
-      console.error("Error getting next question:", err);
-      const errorMsg = { role: "interviewer", text: "Sorry, I had trouble processing that. Could you repeat your answer?" };
+      console.error("Error getting agent response:", err);
+      const errorMsg = { role: "interviewer", text: "Sorry, I had trouble processing that. Could you repeat your answer?", type: "error" };
       setMessages((prev) => [...prev, errorMsg]);
     }
 
+    setIsLoading(false);
+  };
+
+  // Request a hint from the agent
+  const requestHint = async () => {
+    const agent = agentRef.current;
+    if (!agent || isLoading || speaking || isInterviewEnded) return;
+
+    setIsLoading(true);
+    try {
+      const hint = await agent.requestHint();
+      const hintMsg = { role: "interviewer", text: hint, type: "hint" };
+      setMessages((prev) => [...prev, hintMsg]);
+      await speakText(hint);
+    } catch (err) {
+      console.error("Hint error:", err);
+    }
     setIsLoading(false);
   };
 
@@ -152,24 +193,30 @@ export default function InterviewPage() {
     setEmotion(3);
 
     try {
-      const finalReview = await generateReview(messages);
+      const agent = agentRef.current;
+      const finalReview = agent
+        ? await agent.endInterview()
+        : await generateReview(messages);
+
       if (!finalReview || typeof finalReview.overall !== "number") {
         throw new Error("Invalid review data received");
       }
       setReview(finalReview);
       setIsInterviewEnded(true);
+      setAgentPhase("ended");
 
       const closingText = `Thank you for completing the interview! Your overall score is ${finalReview.overall} out of 100. ${finalReview.summary}`;
-      const closingMsg = { role: "interviewer", text: closingText };
+      const closingMsg = { role: "interviewer", text: closingText, type: "wrap_up" };
       setMessages((prev) => [...prev, closingMsg]);
       await speakText(closingText);
 
       setShowDetailedReview(true);
     } catch (err) {
       console.error("Review Error:", err);
-      const errorMsg = { role: "interviewer", text: `Could not generate review: ${err.message}. The interview has ended.` };
+      const errorMsg = { role: "interviewer", text: `Could not generate review: ${err.message}. The interview has ended.`, type: "error" };
       setMessages((prev) => [...prev, errorMsg]);
       setIsInterviewEnded(true);
+      setAgentPhase("ended");
     }
 
     setIsLoading(false);
@@ -202,7 +249,7 @@ export default function InterviewPage() {
               <FiPlay size={24} />
               <span>Begin Interview</span>
             </button>
-            <p className="begin-hint">Click to start — the interviewer will speak to you</p>
+            <p className="begin-hint">Click to start — the AI interviewer will adapt to your answers</p>
           </div>
         </div>
       )}
@@ -242,7 +289,7 @@ export default function InterviewPage() {
           </Canvas>
 
           <div className={`avatar-status ${speaking ? "speaking" : isListening ? "listening" : "idle"}`}>
-            {speaking ? "🗣️ Speaking..." : isListening ? "🎙️ Listening..." : isLoading ? "⏳ Thinking..." : "💡 Ready"}
+            {speaking ? "🗣️ Speaking..." : isListening ? "🎙️ Listening..." : isLoading ? "⏳ Thinking..." : agentPhase === "follow_up" ? "🔍 Follow-up" : "💡 Ready"}
           </div>
 
           <button
@@ -278,6 +325,29 @@ export default function InterviewPage() {
             </div>
           )}
 
+          {/* Text Input */}
+          {hasBegun && !isInterviewEnded && (
+            <form className="text-input-row" onSubmit={handleTextSubmit}>
+              <input
+                ref={textInputRef}
+                type="text"
+                className="text-input"
+                placeholder="Type your answer…"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                disabled={speaking || isLoading || isListening}
+              />
+              <button
+                type="submit"
+                className="send-btn"
+                disabled={!textInput.trim() || speaking || isLoading || isListening}
+                aria-label="Send answer"
+              >
+                <FiSend size={16} />
+              </button>
+            </form>
+          )}
+
           <div className="chat-controls">
             <button className="back-btn" onClick={() => { cancelSpeech(); navigate("/"); }}>
               <FiArrowLeft size={18} />
@@ -290,6 +360,17 @@ export default function InterviewPage() {
             >
               {isListening ? <FiMicOff size={22} /> : <FiMic size={22} />}
               <span>{isListening ? "Stop & Submit" : "Tap to Answer"}</span>
+            </button>
+
+            <button
+              className="hint-btn"
+              onClick={requestHint}
+              disabled={!hasBegun || isLoading || speaking || isInterviewEnded || questionCount < 1}
+              title="Ask for a hint"
+              aria-label="Request a hint"
+            >
+              <FiHelpCircle size={18} />
+              <span>Hint</span>
             </button>
 
             <button
