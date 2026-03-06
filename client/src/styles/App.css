@@ -1214,3 +1214,129 @@ select:focus-visible,
     opacity: 1;
   }
 }
+
+/* ---- TEXT INPUT ROW ---- */
+.text-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-top: 1px solid var(--border-glass);
+  background: var(--bg-secondary);
+}
+
+.text-input {
+  flex: 1;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.text-input::placeholder {
+  color: var(--text-muted);
+}
+
+.text-input:focus {
+  border-color: var(--accent);
+}
+
+.text-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.send-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  background: rgba(167, 139, 250, 0.1);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: rgba(167, 139, 250, 0.2);
+  border-color: var(--accent);
+}
+
+.send-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---- HINT BUTTON ---- */
+.hint-btn {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.15);
+  color: var(--warning);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.hint-btn:hover:not(:disabled) {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: var(--warning);
+}
+
+.hint-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---- CHAT BADGE ---- */
+.chat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.follow-up-badge {
+  background: rgba(129, 140, 248, 0.15);
+  color: var(--accent-2);
+}
+
+/* Hint bubble style */
+.chat-bubble.hint .chat-avatar-icon {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--warning);
+}
+
+.chat-bubble.hint .chat-content {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.12);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble.hint .chat-role {
+  color: var(--warning);
+}
