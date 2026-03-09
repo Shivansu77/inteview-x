@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, Suspense } from "react
 import { useLocation, useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
-import { FiMic, FiMicOff, FiSquare, FiArrowLeft, FiPlay, FiRefreshCw } from "react-icons/fi";
+import { FiMic, FiMicOff, FiSquare, FiArrowLeft, FiPlay, FiRefreshCw, FiMonitor } from "react-icons/fi";
 
 // Components
 import { Model as MyAvatar } from "@/components/avatar/MyAvatar";
@@ -159,6 +159,23 @@ export default function InterviewPage() {
       setReview(finalReview);
       setIsInterviewEnded(true);
 
+      // Save to interview history in localStorage
+      try {
+        const historyEntry = {
+          date: new Date().toISOString(),
+          role,
+          experience,
+          topic,
+          review: finalReview,
+          questionHistory: finalReview.questionHistory || buildQuestionHistory(messages),
+        };
+        const existing = JSON.parse(localStorage.getItem("interviewHistory") || "[]");
+        existing.push(historyEntry);
+        localStorage.setItem("interviewHistory", JSON.stringify(existing));
+      } catch (e) {
+        console.warn("Could not save interview history:", e);
+      }
+
       const closingText = `Thank you for completing the interview! Your overall score is ${finalReview.overall} out of 100. ${finalReview.summary}`;
       const closingMsg = { role: "interviewer", text: closingText };
       setMessages((prev) => [...prev, closingMsg]);
@@ -176,6 +193,22 @@ export default function InterviewPage() {
     setEmotion(0);
   };
 
+  // Build question history from messages as fallback
+  const buildQuestionHistory = (msgs) => {
+    const history = [];
+    for (let i = 0; i < msgs.length; i++) {
+      if (msgs[i].role === "interviewer" && msgs[i + 1]?.role === "candidate") {
+        history.push({
+          question: msgs[i].text,
+          candidateAnswer: msgs[i + 1].text,
+          idealAnswer: "Not available — try again for AI-generated ideal answers",
+          score: null,
+        });
+      }
+    }
+    return history;
+  };
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -187,7 +220,7 @@ export default function InterviewPage() {
   if (!role || !experience || !topic) return null;
 
   return (
-    <div className="interview-page">
+    <div className="interview-page" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* BEGIN OVERLAY */}
       {!hasBegun && (
         <div className="begin-overlay">
@@ -217,13 +250,34 @@ export default function InterviewPage() {
 
       {/* Left side */}
       <div className="interview-left">
+        {/* Top bar */}
+        <div className="interview-topbar">
+          <div className="interview-topbar-left">
+            <button className="topbar-back-btn" onClick={() => { cancelSpeech(); navigate("/choose"); }}>
+              <FiArrowLeft size={18} />
+            </button>
+            <a href="/" className="topbar-logo">
+              <div className="topbar-logo-icon">
+                <FiMonitor className="w-4 h-4 text-white" />
+              </div>
+              <span className="topbar-logo-text" style={{ fontFamily: "'Outfit', sans-serif" }}>InterviewAce</span>
+            </a>
+          </div>
+          <div className="interview-topbar-right">
+            <div className="topbar-session-info">
+              <span className="topbar-tag">{topic}</span>
+              <span className="topbar-tag">{experience}</span>
+            </div>
+          </div>
+        </div>
+
         {/* Avatar Section */}
         <div className="avatar-section">
           <Canvas shadows camera={{ position: [0, 1.65, 2.2], fov: 30 }}>
-            <ambientLight intensity={0.8} />
-            <spotLight position={[5, 8, 5]} angle={0.2} penumbra={1} intensity={1} castShadow />
-            <directionalLight position={[-3, 5, 4]} intensity={0.4} />
-            <color attach="background" args={["#0f0f14"]} />
+            <ambientLight intensity={1.0} />
+            <spotLight position={[5, 8, 5]} angle={0.2} penumbra={1} intensity={1.2} castShadow />
+            <directionalLight position={[-3, 5, 4]} intensity={0.6} />
+            <color attach="background" args={["#6cc4e0"]} />
 
             <Suspense fallback={null}>
               <group
@@ -279,10 +333,6 @@ export default function InterviewPage() {
           )}
 
           <div className="chat-controls">
-            <button className="back-btn" onClick={() => { cancelSpeech(); navigate("/"); }}>
-              <FiArrowLeft size={18} />
-            </button>
-
             <button
               className={`mic-btn ${isListening ? "active" : ""}`}
               onClick={toggleMic}

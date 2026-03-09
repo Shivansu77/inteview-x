@@ -56,8 +56,9 @@ export function Model({
           if (isRight) { node.rotation.z = Math.PI / 3.2; node.rotation.y = Math.PI / 12; node.rotation.x = Math.PI / 16; }
         }
         if (isLeg) {
-          if (isLeft) node.rotation.z = -Math.PI / 36;
-          if (isRight) node.rotation.z = Math.PI / 36;
+          const legSpread = modelUrl?.includes("avatar2") ? Math.PI / 36 : Math.PI / 28;
+          if (isLeft) node.rotation.z = -legSpread;
+          if (isRight) node.rotation.z = legSpread;
         }
         if (isHand) {
           if (isLeft) node.rotation.x = Math.PI / 12;

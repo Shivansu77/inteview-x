@@ -100,6 +100,7 @@ export default function DetailedReviewModal({ review, onClose }) {
 
         <div className="detailed-review-actions">
           <button className="done-btn" onClick={() => navigate("/")}>Return Home</button>
+          <button className="view-log-btn" onClick={() => navigate("/history")}>View History</button>
           <button className="view-log-btn" onClick={onClose}>View Chat Log</button>
         </div>
       </div>

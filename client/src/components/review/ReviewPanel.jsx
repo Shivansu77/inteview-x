@@ -9,14 +9,14 @@ function ScoreRing({ score, label, color }) {
   return (
     <div className="score-ring-container">
       <svg width="90" height="90" viewBox="0 0 90 90">
-        <circle cx="45" cy="45" r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+        <circle cx="45" cy="45" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="6" />
         <circle
           cx="45" cy="45" r={radius} fill="none"
           stroke={color} strokeWidth="6" strokeLinecap="round"
           strokeDasharray={circumference} strokeDashoffset={offset}
           style={{ transition: "stroke-dashoffset 1.5s ease-out", transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}
         />
-        <text x="45" y="45" textAnchor="middle" dy="6" fill="white" fontSize="18" fontWeight="700">
+        <text x="45" y="45" textAnchor="middle" dy="6" fill="#111827" fontSize="18" fontWeight="700">
           {score}
         </text>
       </svg>
@@ -35,11 +35,11 @@ export default function ReviewPanel({ feedbacks, review, isInterviewEnded, quest
         </div>
 
         <div className="score-rings">
-          <ScoreRing score={review.overall ?? 0} label="Overall" color="#a78bfa" />
-          <ScoreRing score={review.communication ?? 0} label="Communication" color="#34d399" />
-          <ScoreRing score={review.technical ?? 0} label="Technical" color="#60a5fa" />
-          <ScoreRing score={review.confidence ?? 0} label="Confidence" color="#fbbf24" />
-          <ScoreRing score={review.problemSolving ?? 0} label="Problem Solving" color="#f472b6" />
+          <ScoreRing score={review.overall ?? 0} label="Overall" color="#1caee4" />
+          <ScoreRing score={review.communication ?? 0} label="Communication" color="#16a34a" />
+          <ScoreRing score={review.technical ?? 0} label="Technical" color="#3b82f6" />
+          <ScoreRing score={review.confidence ?? 0} label="Confidence" color="#f59e0b" />
+          <ScoreRing score={review.problemSolving ?? 0} label="Problem Solving" color="#ec4899" />
         </div>
 
         <div className="review-summary">
