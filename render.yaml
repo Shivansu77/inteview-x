@@ -12,3 +12,4 @@ databases:
   - name: interviewace-db
     engine: postgres
     version: 15
+    plan: free
