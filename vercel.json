@@ -1,22 +1,6 @@
 {
   "version": 2,
   "buildCommand": "cd server && npm install && npm run build",
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "server/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server/dist/index.js"
-    },
-    {
-      "src": "/",
-      "dest": "server/dist/index.js"
-    }
-  ]
+  "outputDirectory": "server/dist",
+  "framework": "express"
 }
