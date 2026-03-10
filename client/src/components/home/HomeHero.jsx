@@ -13,14 +13,14 @@ export default function HomeHero() {
             }} />
 
             {/* Gradient orbs for depth */}
-            <div className="absolute top-[-200px] left-[-100px] w-[600px] h-[600px] rounded-full" style={{ background: "radial-gradient(circle, rgba(28,174,228,0.15) 0%, transparent 70%)" }} />
-            <div className="absolute bottom-[-100px] right-[-50px] w-[500px] h-[500px] rounded-full" style={{ background: "radial-gradient(circle, rgba(110,206,59,0.1) 0%, transparent 70%)" }} />
+            <div className="absolute -top-50 -left-25 w-150 h-150 rounded-full" style={{ background: "radial-gradient(circle, rgba(28,174,228,0.15) 0%, transparent 70%)" }} />
+            <div className="absolute -bottom-25 -right-12.5 w-125 h-125 rounded-full" style={{ background: "radial-gradient(circle, rgba(110,206,59,0.1) 0%, transparent 70%)" }} />
 
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center min-h-[calc(100vh-72px)] py-20 lg:py-0 gap-12 lg:gap-8">
                     {/* Left side — Text content */}
                     <div className="flex-1 max-w-2xl z-10">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.15] border border-white/[0.25] backdrop-blur-sm mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm mb-8">
                             <span className="w-2 h-2 rounded-full bg-[#6ece3b] animate-pulse" />
                             <span className="text-sm font-medium text-white tracking-wide">AI-Powered Interview Preparation</span>
                         </div>
@@ -28,7 +28,7 @@ export default function HomeHero() {
                         <h1 className="text-[2.75rem] md:text-[3.5rem] lg:text-[4rem] font-extrabold text-white leading-[1.08] tracking-tight mb-6" style={{ fontFamily: "'Outfit', sans-serif" }}>
                             Master Your Next
                             <br />
-                            <span className="bg-gradient-to-r from-white to-[#d0f4ff] bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-white to-[#d0f4ff] bg-clip-text text-transparent">
                                 Technical Interview
                             </span>
                         </h1>
@@ -40,7 +40,7 @@ export default function HomeHero() {
                         <div className="flex flex-wrap items-center gap-4 mb-12">
                             <button
                                 onClick={() => navigate("/choose")}
-                                className="group px-8 py-3.5 rounded-lg font-bold text-[15px] text-white transition-all duration-200 shadow-lg shadow-[#6ece3b]/25 hover:shadow-[#6ece3b]/40 hover:translate-y-[-1px]"
+                                className="group px-8 py-3.5 rounded-lg font-bold text-[15px] text-white transition-all duration-200 shadow-lg shadow-[#6ece3b]/25 hover:shadow-[#6ece3b]/40 hover:-translate-y-px"
                                 style={{ background: "linear-gradient(135deg, #6ece3b 0%, #5cb832 100%)" }}
                             >
                                 Start Practicing Free
@@ -48,7 +48,7 @@ export default function HomeHero() {
                             </button>
                             <button
                                 onClick={() => navigate("/login")}
-                                className="px-8 py-3.5 rounded-lg border border-white/40 text-white font-semibold text-[15px] hover:bg-white/[0.15] transition-all duration-200"
+                                className="px-8 py-3.5 rounded-lg border border-white/40 text-white font-semibold text-[15px] hover:bg-white/15 transition-all duration-200"
                             >
                                 Log In
                             </button>
@@ -81,7 +81,7 @@ export default function HomeHero() {
                     <div className="flex-1 w-full max-w-xl lg:max-w-none z-10">
                         <div className="relative">
                             {/* Glowing border effect */}
-                            <div className="absolute -inset-1 bg-gradient-to-r from-white/20 via-[#6ece3b]/20 to-white/20 rounded-2xl blur-sm" />
+                            <div className="absolute -inset-1 bg-linear-to-r from-white/20 via-[#6ece3b]/20 to-white/20 rounded-2xl blur-sm" />
 
                             {/* Mock browser window */}
                             <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#1a1a2e]">

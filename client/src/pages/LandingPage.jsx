@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiPlay, FiUser, FiBriefcase, FiBookOpen, FiMonitor, FiChevronLeft } from "react-icons/fi";
 import { ROLES, EXPERIENCE_LEVELS, TOPICS, AVATARS } from "@/constants/prompts";
+import UserNav from "@/components/UserNav";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -38,21 +39,8 @@ export default function LandingPage() {
             </a>
           </div>
 
-          {/* Right: Auth buttons */}
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => navigate("/login")}
-              className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-[#1caee4] transition-colors"
-            >
-              Log In
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="px-4 py-1.5 rounded-full bg-[#1caee4] text-white text-sm font-semibold hover:bg-[#179ad0] transition-colors duration-150 shadow-sm"
-            >
-              Sign Up
-            </button>
-          </div>
+          {/* Right: User profile */}
+          <UserNav />
         </div>
       </nav>
 

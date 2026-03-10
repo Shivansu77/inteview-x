@@ -36,83 +36,85 @@ function DashboardMockup() {
     ];
 
     return (
-        <div className="rounded-2xl bg-white border border-gray-200/80 shadow-[0_4px_6px_rgba(0,0,0,0.02),0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden select-none" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+        <div className="rounded-2xl bg-white border border-gray-200/80 shadow-[0_4px_6px_rgba(0,0,0,0.02),0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden select-none w-full" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontSize: "0.88em" }}>
             {/* Window chrome */}
-            <div className="flex items-center gap-2 px-5 h-11 bg-[#fafbfc] border-b border-gray-100">
-                <span className="w-[10px] h-[10px] rounded-full bg-[#ff5f57]" />
-                <span className="w-[10px] h-[10px] rounded-full bg-[#febc2e]" />
-                <span className="w-[10px] h-[10px] rounded-full bg-[#28c840]" />
-                <span className="flex-1 text-center text-[11px] text-gray-400 font-medium tracking-wide">Analytics Overview</span>
+            <div className="flex items-center gap-1.5 px-4 h-8 bg-[#fafbfc] border-b border-gray-100">
+                <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
+                <span className="w-2 h-2 rounded-full bg-[#febc2e]" />
+                <span className="w-2 h-2 rounded-full bg-[#28c840]" />
+                <span className="flex-1 text-center text-[10px] text-gray-400 font-medium tracking-wide">Analytics Overview</span>
             </div>
 
-            <div className="p-6 space-y-5">
-                {/* Row 1: Score ring + stat cards */}
-                <div className="flex gap-5 items-stretch">
+            <div className="p-3.5 flex gap-3">
+                {/* Left column */}
+                <div className="flex flex-col gap-3 w-[38%] shrink-0">
                     {/* Overall ring */}
-                    <div className="flex flex-col items-center justify-center bg-[#f8fafc] rounded-xl border border-gray-100 px-5 py-4 shrink-0">
-                        <ScoreRing score={87} size={88} stroke={7} color="#1caee4" />
-                        <span className="text-[11px] text-gray-500 font-semibold mt-2 tracking-wide">OVERALL</span>
+                    <div className="flex flex-col items-center justify-center bg-[#f8fafc] rounded-xl border border-gray-100 px-3 py-3">
+                        <ScoreRing score={87} size={64} stroke={5} color="#1caee4" />
+                        <span className="text-[8px] text-gray-500 font-semibold mt-1 tracking-widest uppercase">Overall</span>
                     </div>
 
                     {/* Mini stat grid */}
-                    <div className="grid grid-cols-2 gap-3 flex-1">
+                    <div className="grid grid-cols-2 gap-1.5">
                         {[
-                            { label: "Interviews", value: "24", sub: "+3 this week", accent: "#1caee4" },
-                            { label: "Ranking", value: "Top 8%", sub: "↑ 15 spots", accent: "#8b5cf6" },
-                            { label: "Streak", value: "12 days", sub: "Personal best", accent: "#6ece3b" },
-                            { label: "Avg. Score", value: "8.4/10", sub: "+0.6 vs last month", accent: "#f59e0b" },
+                            { label: "Interviews", value: "24", accent: "#1caee4" },
+                            { label: "Ranking", value: "Top 8%", accent: "#8b5cf6" },
+                            { label: "Streak", value: "12 days", accent: "#6ece3b" },
+                            { label: "Avg Score", value: "8.4/10", accent: "#f59e0b" },
                         ].map((s, i) => (
-                            <div key={i} className="bg-[#f8fafc] rounded-xl border border-gray-100 px-3.5 py-3 flex flex-col justify-center">
-                                <span className="text-[10px] text-gray-400 font-medium leading-none">{s.label}</span>
-                                <span className="text-[15px] font-bold text-gray-900 leading-tight mt-1">{s.value}</span>
-                                <span className="text-[10px] font-medium mt-0.5 leading-none" style={{ color: s.accent }}>{s.sub}</span>
+                            <div key={i} className="bg-[#f8fafc] rounded-lg border border-gray-100 px-2 py-1.5 flex flex-col justify-center">
+                                <span className="text-[8px] text-gray-400 font-medium leading-none">{s.label}</span>
+                                <span className="text-[12px] font-bold text-gray-900 leading-tight mt-0.5">{s.value}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Row 2: Category scores */}
-                <div className="bg-[#f8fafc] rounded-xl border border-gray-100 p-4">
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-[12px] font-semibold text-gray-800 tracking-tight">Performance by Category</span>
-                        <span className="text-[10px] text-gray-400 font-medium">Last 30 days</span>
-                    </div>
-                    <div className="space-y-3">
-                        {categories.map((cat, i) => (
-                            <div key={i} className="flex items-center gap-3">
-                                <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: cat.color }} />
-                                <span className="text-[12px] text-gray-600 font-medium w-24 shrink-0">{cat.label}</span>
-                                <div className="flex-1 h-[7px] bg-gray-200/70 rounded-full overflow-hidden">
-                                    <div className="h-full rounded-full" style={{ width: `${cat.score}%`, background: cat.color }} />
-                                </div>
-                                <span className="text-[12px] font-semibold text-gray-800 w-10 text-right tabular-nums">{cat.score}%</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Row 3: Recent sessions */}
-                <div className="bg-[#f8fafc] rounded-xl border border-gray-100 p-4">
-                    <span className="text-[12px] font-semibold text-gray-800 tracking-tight block mb-3">Recent Sessions</span>
-                    {[
-                        { title: "System Design — URL Shortener", score: "8.5", tag: "System Design", tagColor: "bg-purple-100 text-purple-700", time: "2h ago" },
-                        { title: "DSA — Binary Tree Traversal", score: "9.2", tag: "DSA", tagColor: "bg-sky-100 text-sky-700", time: "5h ago" },
-                        { title: "Behavioral — Leadership", score: "7.8", tag: "Behavioral", tagColor: "bg-pink-100 text-pink-700", time: "1d ago" },
-                    ].map((s, i) => (
-                        <div key={i} className={`flex items-center gap-3 py-2.5 ${i > 0 ? "border-t border-gray-100" : ""}`}>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-[12px] font-semibold text-gray-800 truncate leading-tight">{s.title}</div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded ${s.tagColor}`}>{s.tag}</span>
-                                    <span className="text-[10px] text-gray-400">{s.time}</span>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-1 shrink-0">
-                                <span className="text-[14px] font-bold text-gray-900">{s.score}</span>
-                                <span className="text-[10px] text-gray-400">/10</span>
-                            </div>
+                {/* Right column */}
+                <div className="flex flex-col gap-3 flex-1 min-w-0">
+                    {/* Category scores */}
+                    <div className="bg-[#f8fafc] rounded-xl border border-gray-100 p-2.5">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-[10px] font-semibold text-gray-800 tracking-tight">Performance by Category</span>
+                            <span className="text-[8px] text-gray-400 font-medium">Last 30 days</span>
                         </div>
-                    ))}
+                        <div className="space-y-1.5">
+                            {categories.map((cat, i) => (
+                                <div key={i} className="flex items-center gap-2">
+                                    <span className="w-1 h-1 rounded-full shrink-0" style={{ background: cat.color }} />
+                                    <span className="text-[10px] text-gray-600 font-medium w-17.5 shrink-0">{cat.label}</span>
+                                    <div className="flex-1 h-1 bg-gray-200/70 rounded-full overflow-hidden">
+                                        <div className="h-full rounded-full" style={{ width: `${cat.score}%`, background: cat.color }} />
+                                    </div>
+                                    <span className="text-[10px] font-semibold text-gray-800 w-7 text-right tabular-nums">{cat.score}%</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Recent sessions */}
+                    <div className="bg-[#f8fafc] rounded-xl border border-gray-100 p-2.5">
+                        <span className="text-[10px] font-semibold text-gray-800 tracking-tight block mb-1.5">Recent Sessions</span>
+                        {[
+                            { title: "System Design — URL Shortener", score: "8.5", tag: "System Design", tagColor: "bg-purple-100 text-purple-700", time: "2h ago" },
+                            { title: "DSA — Binary Tree Traversal", score: "9.2", tag: "DSA", tagColor: "bg-sky-100 text-sky-700", time: "5h ago" },
+                            { title: "Behavioral — Leadership", score: "7.8", tag: "Behavioral", tagColor: "bg-pink-100 text-pink-700", time: "1d ago" },
+                        ].map((s, i) => (
+                            <div key={i} className={`flex items-center gap-2 py-1.5 ${i > 0 ? "border-t border-gray-100" : ""}`}>
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-[10px] font-semibold text-gray-800 truncate leading-tight">{s.title}</div>
+                                    <div className="flex items-center gap-1 mt-0.5">
+                                        <span className={`text-[7px] font-bold px-1 py-px rounded ${s.tagColor}`}>{s.tag}</span>
+                                        <span className="text-[8px] text-gray-400">{s.time}</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-0.5 shrink-0">
+                                    <span className="text-[12px] font-bold text-gray-900">{s.score}</span>
+                                    <span className="text-[8px] text-gray-400">/10</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,11 +124,11 @@ function DashboardMockup() {
 export function DashboardSection() {
     return (
         <section className="py-28 px-6 bg-[#fafbfc]">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
-                {/* Left: Mockup */}
-                <div className="flex-1 order-2 lg:order-1 w-full max-w-[520px]">
-                    <div className="relative">
-                        <div className="absolute -inset-8 bg-gradient-to-br from-[#1caee4]/[0.07] to-purple-500/[0.04] rounded-[32px] blur-3xl pointer-events-none" />
+            <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+                {/* Left: Mockup — constrained smaller */}
+                <div className="flex-1 order-2 lg:order-1 w-full flex justify-center lg:justify-end">
+                    <div className="relative w-full max-w-125">
+                        <div className="absolute -inset-6 bg-linear-to-br from-[#1caee4]/6 to-purple-500/3 rounded-[28px] blur-2xl pointer-events-none" />
                         <div className="relative">
                             <DashboardMockup />
                         </div>
@@ -143,7 +145,7 @@ export function DashboardSection() {
                     <h2 className="text-[2rem] md:text-[2.5rem] font-extrabold text-gray-900 leading-[1.15] mb-5" style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: "-0.025em" }}>
                         Track Your Progress
                         <br />
-                        <span className="bg-gradient-to-r from-[#1caee4] to-[#179ad0] bg-clip-text text-transparent">With Precision</span>
+                        <span className="bg-linear-to-r from-[#1caee4] to-[#179ad0] bg-clip-text text-transparent">With Precision</span>
                     </h2>
 
                     <p className="text-[17px] text-gray-500 mb-10 leading-relaxed max-w-md">
@@ -158,7 +160,7 @@ export function DashboardSection() {
                             { text: "Global ranking among peers", icon: "trophy" },
                         ].map((item, i) => (
                             <div key={i} className="flex items-center gap-3.5">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6ece3b]/10 to-[#6ece3b]/5 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#6ece3b]/10 to-[#6ece3b]/5 flex items-center justify-center shrink-0">
                                     <svg className="w-4 h-4 text-[#6ece3b]" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                     </svg>
@@ -200,7 +202,7 @@ export function TopicsSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {topics.map((topic, i) => (
                         <div key={i} className="group relative p-6 rounded-2xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 cursor-pointer">
-                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${topic.color} flex items-center justify-center mb-4`}>
+                            <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${topic.color} flex items-center justify-center mb-4`}>
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#1caee4] transition-colors">{topic.name}</h3>
@@ -232,7 +234,7 @@ export function FeaturesGrid() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {features.map((feature, i) => (
                         <div key={i} className="group p-7 rounded-2xl bg-white border border-gray-100 hover:border-gray-200 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1caee4]/10 to-[#1caee4]/5 flex items-center justify-center text-[#1caee4] mb-5 group-hover:from-[#1caee4]/20 group-hover:to-[#1caee4]/10 transition-colors">
+                            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#1caee4]/10 to-[#1caee4]/5 flex items-center justify-center text-[#1caee4] mb-5 group-hover:from-[#1caee4]/20 group-hover:to-[#1caee4]/10 transition-colors">
                                 {feature.icon}
                             </div>
                             <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
@@ -249,16 +251,16 @@ export function InterviewAceProSection() {
     const navigate = useNavigate();
     return (
         <section className="py-24 px-6 bg-white overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full" style={{ background: "radial-gradient(circle, rgba(28,174,228,0.06) 0%, transparent 70%)" }} />
+            <div className="absolute top-0 right-0 w-150 h-150 rounded-full" style={{ background: "radial-gradient(circle, rgba(28,174,228,0.06) 0%, transparent 70%)" }} />
             <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row items-center justify-between gap-16">
                 <div className="flex-1 max-w-xl">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#1caee4]/10 to-blue-600/10 text-[#1caee4] text-xs font-bold tracking-wide mb-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-linear-to-r from-[#1caee4]/10 to-blue-600/10 text-[#1caee4] text-xs font-bold tracking-wide mb-6">
                         PRO PLAN
                     </div>
                     <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         Unlock Unlimited
                         <br />
-                        <span className="bg-gradient-to-r from-[#1caee4] to-blue-600 bg-clip-text text-transparent">Potential</span>
+                        <span className="bg-linear-to-r from-[#1caee4] to-blue-600 bg-clip-text text-transparent">Potential</span>
                     </h2>
                     <p className="text-lg text-gray-500 mb-8 leading-relaxed">
                         Get unlimited AI mock interviews, advanced behavioral analysis, and priority support. Land your dream job faster.
@@ -277,13 +279,13 @@ export function InterviewAceProSection() {
                 </div>
                 <div className="flex-1 w-full flex justify-center lg:justify-end">
                     <div className="relative w-full max-w-md">
-                        <div className="absolute -inset-4 bg-gradient-to-tr from-[#1caee4]/10 to-purple-500/10 rounded-3xl blur-2xl" />
+                        <div className="absolute -inset-4 bg-linear-to-tr from-[#1caee4]/10 to-purple-500/10 rounded-3xl blur-2xl" />
                         <img
                             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
                             alt="Team collaborating"
                             className="relative z-10 w-full h-auto object-cover rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.1)] border border-gray-200"
                         />
-                        <div className="absolute -bottom-5 -left-5 bg-white p-4 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] border border-gray-100 z-20 flex items-center gap-3 hidden sm:flex">
+                        <div className="absolute -bottom-5 -left-5 bg-white p-4 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] border border-gray-100 z-20 hidden sm:flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                                 <FiTrendingUp className="w-5 h-5" />
                             </div>
@@ -333,9 +335,9 @@ export function ExpertCoachingSection() {
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
                 <div className="flex-1">
                     <div className="relative">
-                        <div className="absolute -inset-4 bg-gradient-to-br from-purple-500/10 to-pink-500/5 rounded-3xl blur-2xl" />
+                        <div className="absolute -inset-4 bg-linear-to-br from-purple-500/10 to-pink-500/5 rounded-3xl blur-2xl" />
                         <img
-                            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
+                            src="https://res.cloudinary.com/df2sjtgh6/image/upload/v1773064901/interviewer_vzwsxl.jpg"
                             alt="1-on-1 Coaching"
                             className="relative w-full h-auto rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.1)] border border-gray-200"
                         />

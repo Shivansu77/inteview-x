@@ -1,17 +1,27 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMonitor, FiChevronLeft, FiGithub, FiMail, FiLock } from "react-icons/fi";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Simulate login and redirect
-        if (email && password) {
+        setError("");
+        setLoading(true);
+        try {
+            await login({ email, password });
             navigate("/choose");
+        } catch (err) {
+            setError(err.message || "Login failed. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -44,6 +54,12 @@ export default function LoginPage() {
                         </h1>
                         <p className="text-gray-500">Log in to track your mock interview progress.</p>
                     </div>
+
+                    {error && (
+                        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-medium">
+                            {error}
+                        </div>
+                    )}
 
                     <form onSubmit={handleLogin} className="space-y-5">
                         <div>
@@ -85,9 +101,10 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#1caee4] hover:bg-[#169ad0] text-white font-bold text-lg py-3.5 rounded-xl shadow-lg shadow-[#1caee4]/20 transition-all transform hover:-translate-y-0.5 mt-2"
+                            disabled={loading}
+                            className="w-full bg-[#1caee4] hover:bg-[#169ad0] disabled:opacity-60 text-white font-bold text-lg py-3.5 rounded-xl shadow-lg shadow-[#1caee4]/20 transition-all transform hover:-translate-y-0.5 mt-2"
                         >
-                            Sign In
+                            {loading ? "Signing in..." : "Sign In"}
                         </button>
                     </form>
 

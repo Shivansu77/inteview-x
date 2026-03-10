@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiTrash2, FiChevronDown, FiChevronUp, FiMonitor, FiCheck, FiX, FiAward } from "react-icons/fi";
+import UserNav from "@/components/UserNav";
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ export default function HistoryPage() {
               <span>Clear All</span>
             </button>
           )}
+          <UserNav />
         </div>
       </div>
 

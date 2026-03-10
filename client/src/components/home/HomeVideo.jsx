@@ -89,7 +89,7 @@ export default function HomeVideo() {
                         loop
                         playsInline
                     >
-                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/df2sjtgh6/video/upload/v1773050614/Screen_Recording_2026-03-09_at_3.30.28_PM_effk1d.mov" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                 </div>
