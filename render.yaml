@@ -10,6 +10,6 @@ services:
 
 databases:
   - name: interviewace-db
-    engine: postgres
-    version: 15
+    databaseName: interviewace
+    user: interviewace
     plan: free
