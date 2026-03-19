@@ -3,8 +3,7 @@ import { Pool } from "pg";
 const connectionString =
   process.env.DATABASE_URL ||
   process.env.POSTGRES_URL ||
-  process.env.SUPABASE_DB_URL ||
-  process.env.MONGODB_URI;
+  process.env.SUPABASE_DB_URL;
 
 export const pool = new Pool({
   connectionString,
