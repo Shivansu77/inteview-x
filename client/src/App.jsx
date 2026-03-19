@@ -8,6 +8,7 @@ import Homepage from "@/pages/Homepage";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import HistoryPage from "@/pages/HistoryPage";
+import DashBoardPage from "@/pages/DashBoardPage";
 import "@/styles/App.css";
 
 function App() {
@@ -42,6 +43,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashBoardPage />
+              </ProtectedRoute>
+            }
+          /> 
         </Routes>
       </Router>
     </AuthProvider>

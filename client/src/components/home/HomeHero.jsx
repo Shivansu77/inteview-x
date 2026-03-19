@@ -14,7 +14,7 @@ export default function HomeHero() {
 
             {/* Gradient orbs for depth */}
             <div className="absolute -top-50 -left-25 w-150 h-150 rounded-full" style={{ background: "radial-gradient(circle, rgba(28,174,228,0.15) 0%, transparent 70%)" }} />
-            <div className="absolute -bottom-25 -right-12.5 w-125 h-125 rounded-full" style={{ background: "radial-gradient(circle, rgba(110,206,59,0.1) 0%, transparent 70%)" }} />
+            <div className="absolute-bottom-25 -right-12.5 w-125 h-125 rounded-full" style={{ background: "radial-gradient(circle, rgba(110,206,59,0.1) 0%, transparent 70%)" }} />
 
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center min-h-[calc(100vh-72px)] py-20 lg:py-0 gap-12 lg:gap-8">
