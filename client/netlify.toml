@@ -7,7 +7,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://inteview-x.vercel.app/api/:splat"
+  to = "https://interview-x.vercel.app/api/:splat"
   status = 200
   force = true
 

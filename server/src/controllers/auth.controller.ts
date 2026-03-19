@@ -12,7 +12,7 @@ const generateToken = (userId: string, role: string): string => {
 /** POST /api/auth/register */
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password } = req.body || {};
 
     if (!name || !email || !password) {
       res.status(400).json({ success: false, message: "Name, email, and password are required" });
@@ -47,7 +47,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 /** POST /api/auth/login */
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
     if (!email || !password) {
       res.status(400).json({ success: false, message: "Email and password are required" });

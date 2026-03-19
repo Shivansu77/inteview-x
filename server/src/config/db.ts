@@ -12,6 +12,6 @@ export const connectDb = async (): Promise<void> => {
     client.release();
   } catch (error) {
     console.error("❌ PostgreSQL connection error:", error);
-    process.exit(1);
+    throw error;
   }
 };
