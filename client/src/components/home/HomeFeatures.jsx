@@ -201,7 +201,7 @@ export function TopicsSection() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {topics.map((topic, i) => (
-                        <div key={i} className="group relative p-6 rounded-2xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 cursor-pointer">
+                        <div key={i} className="group relative p-6 rounded-2xl glass-card border border-white/60 hover:border-white/80 hover:shadow-[0_16px_40px_rgba(15,23,42,0.12)] transition-all duration-300 cursor-pointer">
                             <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${topic.color} flex items-center justify-center mb-4`}>
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                             </div>
@@ -233,7 +233,7 @@ export function FeaturesGrid() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {features.map((feature, i) => (
-                        <div key={i} className="group p-7 rounded-2xl bg-white border border-gray-100 hover:border-gray-200 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300">
+                        <div key={i} className="group p-7 rounded-2xl glass-card border border-white/60 hover:border-white/80 hover:shadow-[0_18px_50px_rgba(15,23,42,0.12)] transition-all duration-300">
                             <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#1caee4]/10 to-[#1caee4]/5 flex items-center justify-center text-[#1caee4] mb-5 group-hover:from-[#1caee4]/20 group-hover:to-[#1caee4]/10 transition-colors">
                                 {feature.icon}
                             </div>

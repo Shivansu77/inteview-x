@@ -13,8 +13,10 @@ const generateToken = (userId: string, role: string): string => {
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password } = req.body || {};
+    const normalizedName = typeof name === "string" ? name.trim() : "";
+    const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
 
-    if (!name || !email || !password) {
+    if (!normalizedName || !normalizedEmail || !password) {
       res.status(400).json({ success: false, message: "Name, email, and password are required" });
       return;
     }
@@ -24,13 +26,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const existingUser = await User.findByEmail(email);
+    const existingUser = await User.findByEmail(normalizedEmail);
     if (existingUser) {
       res.status(409).json({ success: false, message: "Email already registered" });
       return;
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name: normalizedName, email: normalizedEmail, password });
     const token = generateToken(user.id, user.role);
 
     res.status(201).json({
@@ -48,15 +50,25 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body || {};
+    const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       res.status(400).json({ success: false, message: "Email and password are required" });
       return;
     }
 
-    const user = await User.findByEmail(email);
+    const user = await User.findByEmail(normalizedEmail);
     if (!user) {
       res.status(401).json({ success: false, message: "Invalid email or password" });
+      return;
+    }
+
+    if (!user.password || typeof user.password !== "string") {
+      console.error("Login error: password hash missing for user", { id: user.id, email: normalizedEmail });
+      res.status(500).json({
+        success: false,
+        message: "This account is missing a password hash. Please register again to repair it.",
+      });
       return;
     }
 

@@ -22,8 +22,13 @@ async function parseResponseBody(res) {
 }
 
 function getErrorMessage(res, body, fallback) {
+  const details =
+    body && typeof body.details === "string" && body.details.trim()
+      ? ` Details: ${body.details}`
+      : "";
+
   if (body && typeof body.message === "string" && body.message.trim()) {
-    return body.message;
+    return `${body.message}${details}`;
   }
 
   if (res.statusText) {

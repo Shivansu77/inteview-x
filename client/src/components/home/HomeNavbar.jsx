@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiMenu, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { navLinks, platformItems, mockInterviewsItems, resourcesItems } from "../../data/homeData";
 
@@ -63,6 +63,7 @@ export default function HomeNavbar() {
     const navigate = useNavigate();
     const [openMenu, setOpenMenu] = useState(null);
     const [scrolled, setScrolled] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
     const navRef = React.useRef(null);
     const platformBtnRef = React.useRef(null);
     const mockInterviewsBtnRef = React.useRef(null);
@@ -103,7 +104,7 @@ export default function HomeNavbar() {
     return (
         <nav
             ref={navRef}
-            className={`sticky top-0 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.08)]" : "bg-white"}`}
+            className={`sticky top-0 transition-all duration-300 glass-nav ${scrolled ? "shadow-[0_6px_30px_rgba(15,23,42,0.08)]" : ""}`}
             style={{ zIndex: 100 }}
         >
             <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-[72px]">
@@ -150,8 +151,50 @@ export default function HomeNavbar() {
                     >
                         Sign Up Free
                     </button>
+                    <button
+                        onClick={() => setMobileOpen(prev => !prev)}
+                        className="lg:hidden w-10 h-10 rounded-lg border border-gray-200 bg-white/80 flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
+                        aria-label="Toggle menu"
+                    >
+                        {mobileOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+                    </button>
                 </div>
             </div>
+
+            {mobileOpen && (
+                <div className="lg:hidden px-5 pb-5">
+                    <div className="glass-panel rounded-2xl p-4">
+                        <div className="grid grid-cols-2 gap-2">
+                            {navLinks.map(({ label, hasDropdown }) => (
+                                <button
+                                    key={label}
+                                    onClick={() => {
+                                        if (hasDropdown) toggle(label);
+                                        setMobileOpen(false);
+                                    }}
+                                    className="text-left px-3 py-2 rounded-lg text-[13px] font-semibold text-gray-700 hover:text-gray-900 hover:bg-white/70 transition-colors"
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="mt-4 flex items-center gap-2">
+                            <button
+                                onClick={() => navigate("/login")}
+                                className="flex-1 px-4 py-2 rounded-lg border border-gray-200 text-[13px] font-semibold text-gray-700 hover:bg-white/70 transition-colors"
+                            >
+                                Log In
+                            </button>
+                            <button
+                                onClick={() => navigate("/signup")}
+                                className="flex-1 px-4 py-2 rounded-lg bg-gray-900 text-white text-[13px] font-semibold hover:bg-gray-800 transition-colors"
+                            >
+                                Sign Up Free
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {openMenu === "Platform" && <NavDropdown btnRef={platformBtnRef} navRef={navRef} items={platformItems} />}
             {openMenu === "Mock Interviews" && <NavDropdown btnRef={mockInterviewsBtnRef} navRef={navRef} items={mockInterviewsItems} />}

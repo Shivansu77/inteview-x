@@ -27,9 +27,20 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+        <div className="min-h-screen bg-gray-50 flex flex-col relative" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div
+                    className="absolute -top-24 -right-24 w-[360px] h-[360px] rounded-full"
+                    style={{ background: "radial-gradient(circle, rgba(28,174,228,0.14) 0%, transparent 70%)" }}
+                />
+                <div
+                    className="absolute bottom-0 -left-16 w-[320px] h-[320px] rounded-full"
+                    style={{ background: "radial-gradient(circle, rgba(110,206,59,0.12) 0%, transparent 70%)" }}
+                />
+                <div className="absolute inset-0 soft-grid opacity-35" />
+            </div>
             {/* Navbar Minimal */}
-            <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <nav className="glass-nav px-6 py-4 flex items-center justify-between">
                 <button
                     onClick={() => navigate("/")}
                     className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 transition-colors"
@@ -46,8 +57,32 @@ export default function SignupPage() {
             </nav>
 
             {/* Main Content */}
-            <div className="flex-1 flex items-center justify-center px-6 py-12">
-                <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8 md:p-10 w-full max-w-md my-auto">
+            <div className="flex-1 flex items-center justify-center px-6 py-12 relative">
+                <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div className="hidden md:block">
+                        <div className="glass-card rounded-3xl p-8 border border-white/60">
+                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                                Start Practicing Smarter
+                            </h2>
+                            <p className="text-gray-500 mb-6">
+                                Build a consistent practice routine, then measure progress across every mock session.
+                            </p>
+                            <div className="space-y-4">
+                                {[
+                                    "Instant feedback after every answer",
+                                    "Interview analytics dashboard",
+                                    "Private session history",
+                                ].map((item) => (
+                                    <div key={item} className="flex items-center gap-3 text-sm text-gray-600">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-[#6ece3b]" />
+                                        {item}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="glass-panel rounded-3xl p-8 md:p-10 w-full my-auto">
 
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -155,6 +190,7 @@ export default function SignupPage() {
                         </button>
                     </p>
 
+                    </div>
                 </div>
             </div>
         </div>

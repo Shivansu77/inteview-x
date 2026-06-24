@@ -21,7 +21,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* ═══════════ TOP NAVBAR (matches homepage) ═══════════ */}
-      <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0" style={{ zIndex: 100 }}>
+      <nav className="glass-nav shadow-sm sticky top-0" style={{ zIndex: 100 }}>
         <div className="max-w-7xl mx-auto px-5 flex items-center justify-between h-14">
           {/* Left: Back + Logo */}
           <div className="flex items-center gap-3">
@@ -39,13 +39,28 @@ export default function LandingPage() {
             </a>
           </div>
 
-          {/* Right: User profile */}
-          <UserNav />
+          {/* Right: Quick nav + user profile */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="px-3 py-1.5 text-sm font-semibold text-gray-600 hover:text-[#1caee4] hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => navigate("/history")}
+              className="px-3 py-1.5 text-sm font-semibold text-gray-600 hover:text-[#1caee4] hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              History
+            </button>
+            <UserNav />
+          </div>
         </div>
       </nav>
 
       {/* ═══════════ MAIN CONTENT ═══════════ */}
       <div className="flex-1 relative overflow-hidden">
+        <div className="absolute inset-0 soft-grid opacity-40" />
         {/* Decorative background elements */}
         <div
           className="absolute rounded-full"
@@ -78,7 +93,7 @@ export default function LandingPage() {
           </div>
 
           {/* Form Card */}
-          <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.06)] border border-gray-100 p-8 md:p-10 w-full">
+          <div className="glass-panel rounded-3xl p-8 md:p-10 w-full">
             <div className="space-y-10">
               {/* Role Selection */}
               <div>

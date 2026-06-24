@@ -1,5 +1,5 @@
 import React from "react";
-import { FiStar, FiArrowRight } from "react-icons/fi";
+import { FiStar, FiArrowRight, FiCheck, FiZap, FiClock, FiShield } from "react-icons/fi";
 import { trustedStats } from "../../data/homeData";
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +41,7 @@ export function TestimonialsSection() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {testimonials.map((t, i) => (
-                        <div key={i} className="p-7 rounded-2xl bg-white/4 border border-white/8 backdrop-blur-sm hover:bg-white/6 transition-colors">
+                        <div key={i} className="p-7 rounded-2xl glass-dark hover:bg-white/10 transition-colors">
                             <div className="flex gap-1 text-yellow-400 mb-5">
                                 {[...Array(5)].map((_, j) => <FiStar key={j} className="fill-current w-4 h-4" />)}
                             </div>
@@ -105,7 +105,7 @@ export function StudentReviews() {
         <section className="py-16 px-6 bg-white overflow-hidden">
             <div className="flex gap-5 animate-scroll-left">
                 {[...reviews, ...reviews, ...reviews].map((r, i) => (
-                    <div key={i} className="shrink-0 w-72 p-5 rounded-xl bg-gray-50 border border-gray-100">
+                    <div key={i} className="shrink-0 w-72 p-5 rounded-xl glass-card border border-white/60">
                         <div className="flex justify-between items-start mb-3">
                             <span className="font-bold text-gray-900 text-sm">{r.author}</span>
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-green-50 text-green-600">{r.score}</span>
@@ -143,6 +143,190 @@ export function CommunitySection() {
                     </svg>
                     Join Discord Server
                 </button>
+            </div>
+        </section>
+    );
+}
+
+/* ─── How It Works ─── */
+export function HowItWorksSection() {
+    const steps = [
+        {
+            title: "Pick your target role",
+            desc: "Choose role, level, and focus area. We tailor questions to your exact goal.",
+            icon: <FiZap className="w-5 h-5" />,
+        },
+        {
+            title: "Practice with AI",
+            desc: "A realistic interviewer adapts live to your answers and pace.",
+            icon: <FiClock className="w-5 h-5" />,
+        },
+        {
+            title: "Get precise feedback",
+            desc: "Actionable insights on communication, structure, and problem solving.",
+            icon: <FiShield className="w-5 h-5" />,
+        },
+    ];
+
+    return (
+        <section className="py-24 px-6 bg-white">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center max-w-2xl mx-auto mb-14">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-600 text-xs font-bold tracking-wide mb-4">
+                        HOW IT WORKS
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        From Prep To Offer
+                    </h2>
+                    <p className="text-lg text-gray-500">
+                        A simple workflow that mirrors real interview pressure.
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {steps.map((step, i) => (
+                        <div key={step.title} className="glass-card rounded-2xl p-6 border border-white/60">
+                            <div className="flex items-center justify-between mb-5">
+                                <div className="w-11 h-11 rounded-xl bg-white/70 border border-white/80 flex items-center justify-center text-[#1caee4]">
+                                    {step.icon}
+                                </div>
+                                <span className="text-xs font-bold text-gray-400">0{i + 1}</span>
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
+                            <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ─── Pricing Preview ─── */
+export function PricingPreviewSection() {
+    const plans = [
+        {
+            name: "Starter",
+            price: "$0",
+            label: "Forever",
+            accent: "#1caee4",
+            features: ["3 interviews / month", "Basic AI feedback", "Core question bank", "Community access"],
+        },
+        {
+            name: "Pro",
+            price: "$29",
+            label: "per month",
+            accent: "#111827",
+            features: ["Unlimited interviews", "Advanced feedback", "Live IDE", "Priority support"],
+            popular: true,
+        },
+        {
+            name: "Team",
+            price: "$99",
+            label: "per month",
+            accent: "#6ece3b",
+            features: ["Team analytics", "Shared templates", "Coach sessions", "Admin dashboards"],
+        },
+    ];
+
+    return (
+        <section className="py-24 px-6 bg-gray-50/50">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center max-w-2xl mx-auto mb-14">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold tracking-wide mb-4">
+                        PRICING
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        Plans For Every Stage
+                    </h2>
+                    <p className="text-lg text-gray-500">
+                        Start free, upgrade when you are ready to go all in.
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {plans.map((plan) => (
+                        <div
+                            key={plan.name}
+                            className={`glass-card rounded-2xl p-6 border border-white/60 ${plan.popular ? "ring-2 ring-[#1caee4]/30" : ""}`}
+                        >
+                            <div className="flex items-start justify-between mb-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
+                                    <div className="text-sm text-gray-500">{plan.label}</div>
+                                </div>
+                                {plan.popular && (
+                                    <span className="text-[11px] font-bold text-[#1caee4] bg-[#1caee4]/10 px-2.5 py-1 rounded-full">
+                                        MOST POPULAR
+                                    </span>
+                                )}
+                            </div>
+                            <div className="flex items-end gap-2 mb-5">
+                                <span className="text-3xl font-extrabold" style={{ color: plan.accent }}>{plan.price}</span>
+                                <span className="text-sm text-gray-500">/mo</span>
+                            </div>
+                            <div className="space-y-2 mb-6">
+                                {plan.features.map((feature) => (
+                                    <div key={feature} className="flex items-center gap-2 text-sm text-gray-600">
+                                        <FiCheck className="text-[#6ece3b]" />
+                                        {feature}
+                                    </div>
+                                ))}
+                            </div>
+                            <button
+                                className={`w-full py-2.5 rounded-xl font-semibold text-sm ${plan.popular
+                                    ? "bg-[#1caee4] text-white hover:bg-[#169ad0]"
+                                    : "bg-white/70 border border-white/80 text-gray-700 hover:bg-white"}`}
+                            >
+                                Choose {plan.name}
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ─── FAQ ─── */
+export function FaqSection() {
+    const faqs = [
+        {
+            q: "How accurate is the AI feedback?",
+            a: "Feedback is scored across communication, structure, and technical depth using calibrated rubrics.",
+        },
+        {
+            q: "Can I practice for non-technical roles?",
+            a: "Yes. Behavioral and leadership tracks are available for PM, EM, and data roles.",
+        },
+        {
+            q: "Do I need to install anything?",
+            a: "No. Everything runs directly in the browser, including the live code editor.",
+        },
+        {
+            q: "Is my data private?",
+            a: "Sessions are private by default. You control what gets saved and shared.",
+        },
+    ];
+
+    return (
+        <section className="py-24 px-6 bg-white">
+            <div className="max-w-6xl mx-auto">
+                <div className="text-center max-w-2xl mx-auto mb-14">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-bold tracking-wide mb-4">
+                        FAQ
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                        Frequently Asked Questions
+                    </h2>
+                    <p className="text-lg text-gray-500">Everything you need to know before you start.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {faqs.map((item) => (
+                        <div key={item.q} className="glass-card rounded-2xl p-6 border border-white/60">
+                            <h3 className="text-base font-bold text-gray-900 mb-2">{item.q}</h3>
+                            <p className="text-sm text-gray-500 leading-relaxed">{item.a}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </section>
     );
@@ -187,8 +371,8 @@ export function ResourcesSection() {
                 </div>
                 <div className="flex-1 max-w-md">
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="aspect-square bg-linear-to-br from-gray-100 to-gray-50 rounded-2xl border border-gray-100"></div>
-                        <div className="aspect-square bg-linear-to-br from-blue-50 to-[#1caee4]/10 rounded-2xl border border-blue-100 mt-8"></div>
+                        <div className="aspect-square rounded-2xl glass-card border border-white/60"></div>
+                        <div className="aspect-square rounded-2xl glass-card border border-white/60 mt-8"></div>
                     </div>
                 </div>
             </div>

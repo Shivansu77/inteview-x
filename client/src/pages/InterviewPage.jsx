@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, Suspense } from "react
 import { useLocation, useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
-import { FiMic, FiMicOff, FiSquare, FiArrowLeft, FiPlay, FiRefreshCw, FiMonitor } from "react-icons/fi";
+import { FiMic, FiMicOff, FiSquare, FiArrowLeft, FiPlay, FiRefreshCw, FiMonitor, FiClock, FiHash, FiInfo } from "react-icons/fi";
 
 // Components
 import { Model as MyAvatar } from "@/components/avatar/MyAvatar";
@@ -43,6 +43,8 @@ export default function InterviewPage() {
   const [isInterviewEnded, setIsInterviewEnded] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
   const [showDetailedReview, setShowDetailedReview] = useState(false);
+  const [elapsedSec, setElapsedSec] = useState(0);
+  const [showHint, setShowHint] = useState(false);
 
   // Avatar state
   const [speaking, setSpeaking] = useState(false);
@@ -80,10 +82,25 @@ export default function InterviewPage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    if (!hasBegun || isInterviewEnded) return;
+    const timer = setInterval(() => {
+      setElapsedSec((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [hasBegun, isInterviewEnded]);
+
+  const formatElapsed = (sec) => {
+    const minutes = Math.floor(sec / 60).toString().padStart(2, "0");
+    const seconds = (sec % 60).toString().padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
   // BEGIN INTERVIEW
   const beginInterview = useCallback(async () => {
     warmUp();
     setHasBegun(true);
+    setElapsedSec(0);
     setIsLoading(true);
     setEmotion(3);
 
@@ -268,6 +285,21 @@ export default function InterviewPage() {
               <span className="topbar-tag">{topic}</span>
               <span className="topbar-tag">{experience}</span>
             </div>
+            <div className="session-stats">
+              <span className="stat-chip">
+                <FiClock size={14} /> {formatElapsed(elapsedSec)}
+              </span>
+              <span className="stat-chip">
+                <FiHash size={14} /> Q{questionCount || 0}
+              </span>
+              <button
+                className={`stat-chip stat-chip-btn ${showHint ? "active" : ""}`}
+                onClick={() => setShowHint((prev) => !prev)}
+                type="button"
+              >
+                <FiInfo size={14} /> Hint
+              </button>
+            </div>
           </div>
         </div>
 
@@ -329,6 +361,13 @@ export default function InterviewPage() {
             <div className="transcript-preview">
               <span className="transcript-dot"></span>
               {transcript}
+            </div>
+          )}
+
+          {showHint && (
+            <div className="hint-panel">
+              <div className="hint-title">Answering Tip</div>
+              <p>Use the STAR structure and name your tradeoffs. Keep answers concise, then expand with evidence.</p>
             </div>
           )}
 

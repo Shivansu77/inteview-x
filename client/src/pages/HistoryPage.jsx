@@ -1,18 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiTrash2, FiChevronDown, FiChevronUp, FiMonitor, FiCheck, FiX, FiAward } from "react-icons/fi";
+import { FiArrowLeft, FiTrash2, FiMonitor, FiSearch } from "react-icons/fi";
 import UserNav from "@/components/UserNav";
+import HistoryContent from "@/components/homepage/HistoryContent";
 
 export default function HistoryPage() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
-  const [expandedSession, setExpandedSession] = useState(null);
-  const [expandedQuestion, setExpandedQuestion] = useState(null);
+  const [query, setQuery] = useState("");
+  const [topicFilter, setTopicFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("interviewHistory") || "[]");
     setSessions(stored.sort((a, b) => new Date(b.date) - new Date(a.date)));
   }, []);
+
+  const filters = useMemo(() => {
+    const topics = Array.from(new Set(sessions.map((s) => s.topic).filter(Boolean)));
+    const roles = Array.from(new Set(sessions.map((s) => s.role).filter(Boolean)));
+    return { topics, roles };
+  }, [sessions]);
+
+  const filteredSessions = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return sessions.filter((session) => {
+      const matchesQuery = !q || [session.topic, session.role, session.experience]
+        .filter(Boolean)
+        .some((item) => item.toLowerCase().includes(q));
+      const matchesTopic = topicFilter === "all" || session.topic === topicFilter;
+      const matchesRole = roleFilter === "all" || session.role === roleFilter;
+      return matchesQuery && matchesTopic && matchesRole;
+    });
+  }, [sessions, query, topicFilter, roleFilter]);
 
   const clearHistory = () => {
     if (window.confirm("Are you sure you want to clear all interview history?")) {
@@ -25,21 +45,6 @@ export default function HistoryPage() {
     const updated = sessions.filter((_, i) => i !== idx);
     localStorage.setItem("interviewHistory", JSON.stringify(updated));
     setSessions(updated);
-  };
-
-  const getScoreColor = (score) => {
-    if (score >= 80) return "#16a34a";
-    if (score >= 60) return "#f59e0b";
-    if (score >= 40) return "#f97316";
-    return "#ef4444";
-  };
-
-  const formatDate = (dateStr) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
-      month: "short", day: "numeric", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    });
   };
 
   return (
@@ -69,11 +74,33 @@ export default function HistoryPage() {
         </div>
       </div>
 
+      <div className="history-filterbar">
+        <div className="filter-input">
+          <FiSearch size={16} />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by topic, role, or level"
+          />
+        </div>
+        <select value={topicFilter} onChange={(e) => setTopicFilter(e.target.value)}>
+          <option value="all">All Topics</option>
+          {filters.topics.map((topic) => (
+            <option key={topic} value={topic}>{topic}</option>
+          ))}
+        </select>
+        <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
+          <option value="all">All Roles</option>
+          {filters.roles.map((role) => (
+            <option key={role} value={role}>{role}</option>
+          ))}
+        </select>
+      </div>
+
       {/* Content */}
       <HistoryContent
-    sessions={sessions}
-    onDeleteSession={deleteSession}
-    onClearHistory={clearHistory}
+        sessions={filteredSessions}
+        onDeleteSession={deleteSession}
       />
     </div>
   );

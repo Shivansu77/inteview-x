@@ -20,6 +20,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 		return app(req as any, res as any);
 	} catch (error) {
 		console.error("Server init error:", error);
+		const details = error instanceof Error ? error.message : "Unknown initialization error";
 		if (!res.headersSent) {
 			res.statusCode = 500;
 			res.setHeader("content-type", "application/json");
@@ -27,6 +28,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 				JSON.stringify({
 					success: false,
 					message: "Server initialization failed. Check backend environment variables and database connectivity.",
+					details,
 				})
 			);
 			return;
