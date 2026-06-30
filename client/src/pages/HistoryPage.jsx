@@ -12,8 +12,16 @@ export default function HistoryPage() {
   const [roleFilter, setRoleFilter] = useState("all");
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("interviewHistory") || "[]");
-    setSessions(stored.sort((a, b) => new Date(b.date) - new Date(a.date)));
+    const fetchHistory = async () => {
+      try {
+        const { getInterviewsFromDb } = await import("@/services/api.service");
+        const stored = await getInterviewsFromDb();
+        setSessions(stored.sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date)));
+      } catch (err) {
+        console.error("Failed to load history:", err);
+      }
+    };
+    fetchHistory();
   }, []);
 
   const filters = useMemo(() => {
@@ -34,17 +42,30 @@ export default function HistoryPage() {
     });
   }, [sessions, query, topicFilter, roleFilter]);
 
-  const clearHistory = () => {
+  const clearHistory = async () => {
     if (window.confirm("Are you sure you want to clear all interview history?")) {
-      localStorage.removeItem("interviewHistory");
-      setSessions([]);
+      try {
+        const { clearInterviewsFromDb } = await import("@/services/api.service");
+        await clearInterviewsFromDb();
+        setSessions([]);
+      } catch (err) {
+        console.error("Failed to clear history:", err);
+      }
     }
   };
 
-  const deleteSession = (idx) => {
-    const updated = sessions.filter((_, i) => i !== idx);
-    localStorage.setItem("interviewHistory", JSON.stringify(updated));
-    setSessions(updated);
+  const deleteSession = async (idx) => {
+    const session = sessions[idx];
+    try {
+      if (session.id) {
+        const { deleteInterviewFromDb } = await import("@/services/api.service");
+        await deleteInterviewFromDb(session.id);
+      }
+      const updated = sessions.filter((_, i) => i !== idx);
+      setSessions(updated);
+    } catch (err) {
+      console.error("Failed to delete session:", err);
+    }
   };
 
   return (

@@ -176,21 +176,18 @@ export default function InterviewPage() {
       setReview(finalReview);
       setIsInterviewEnded(true);
 
-      // Save to interview history in localStorage
+      // Save to interview history in DB
       try {
-        const historyEntry = {
-          date: new Date().toISOString(),
+        const { saveInterviewToDb } = await import("@/services/api.service");
+        await saveInterviewToDb({
           role,
           experience,
           topic,
           review: finalReview,
           questionHistory: finalReview.questionHistory || buildQuestionHistory(messages),
-        };
-        const existing = JSON.parse(localStorage.getItem("interviewHistory") || "[]");
-        existing.push(historyEntry);
-        localStorage.setItem("interviewHistory", JSON.stringify(existing));
+        });
       } catch (e) {
-        console.warn("Could not save interview history:", e);
+        console.warn("Could not save interview history to database:", e);
       }
 
       const closingText = `Thank you for completing the interview! Your overall score is ${finalReview.overall} out of 100. ${finalReview.summary}`;

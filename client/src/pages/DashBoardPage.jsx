@@ -1,41 +1,43 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiFileText, FiMonitor, FiUploadCloud, FiBookOpen, FiPlayCircle, FiClock } from "react-icons/fi";
 import UserNav from "@/components/UserNav";
 import { useAuth } from "@/context/AuthContext";
 
-const PROFILE_STORAGE_KEY = "interviewace_profile";
-
-const getSafeHistory = () => {
-  try {
-    const parsed = JSON.parse(localStorage.getItem("interviewHistory") || "[]");
-    if (!Array.isArray(parsed)) return [];
-    return parsed;
-  } catch {
-    return [];
-  }
-};
-
-const getSafeProfile = () => {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "{}");
-    return typeof parsed === "object" && parsed ? parsed : {};
-  } catch {
-    return {};
-  }
-};
-
 export default function DashBoardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const sessions = useMemo(() => getSafeHistory().sort((a, b) => new Date(b.date) - new Date(a.date)), []);
-  const [profile, setProfile] = useState(() => getSafeProfile());
-  const [resumeFileName, setResumeFileName] = useState(profile.resumeFileName || "");
-  const [headline, setHeadline] = useState(profile.headline || "");
-  const [targetRole, setTargetRole] = useState(profile.targetRole || "");
-  const [githubUrl, setGithubUrl] = useState(profile.githubUrl || "");
-  const [linkedinUrl, setLinkedinUrl] = useState(profile.linkedinUrl || "");
+  
+  const [sessions, setSessions] = useState([]);
+  const [profile, setProfile] = useState({});
+  const [resumeFileName, setResumeFileName] = useState("");
+  const [headline, setHeadline] = useState("");
+  const [targetRole, setTargetRole] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
   const [savedMessage, setSavedMessage] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { getInterviewsFromDb, getProfileFromDb } = await import("@/services/api.service");
+        
+        const storedSessions = await getInterviewsFromDb();
+        setSessions(storedSessions.sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date)));
+
+        const storedProfile = await getProfileFromDb();
+        setProfile(storedProfile);
+        setResumeFileName(storedProfile.resumeFileName || "");
+        setHeadline(storedProfile.headline || "");
+        setTargetRole(storedProfile.targetRole || "");
+        setGithubUrl(storedProfile.githubUrl || "");
+        setLinkedinUrl(storedProfile.linkedinUrl || "");
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      }
+    };
+    fetchData();
+  }, []);
 
   const averageScore = useMemo(() => {
     const scoredSessions = sessions.filter((s) => typeof s?.review?.overall === "number");
@@ -51,19 +53,25 @@ export default function DashBoardPage() {
 
   const lastSession = sessions[0] || null;
 
-  const saveProfile = () => {
-    const nextProfile = {
-      headline,
-      targetRole,
-      githubUrl,
-      linkedinUrl,
-      resumeFileName,
-      updatedAt: new Date().toISOString(),
-    };
-    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(nextProfile));
-    setProfile(nextProfile);
-    setSavedMessage("Profile updated");
-    setTimeout(() => setSavedMessage(""), 1800);
+  const saveProfile = async () => {
+    try {
+      const { updateProfileInDb } = await import("@/services/api.service");
+      const nextProfile = {
+        headline,
+        targetRole,
+        githubUrl,
+        linkedinUrl,
+        resumeFileName,
+      };
+      const updated = await updateProfileInDb(nextProfile);
+      setProfile(updated);
+      setSavedMessage("Profile updated");
+      setTimeout(() => setSavedMessage(""), 1800);
+    } catch (err) {
+      console.error("Failed to save profile", err);
+      setSavedMessage("Failed to save profile");
+      setTimeout(() => setSavedMessage(""), 1800);
+    }
   };
 
   const handleResumeUpload = (e) => {

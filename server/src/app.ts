@@ -4,12 +4,16 @@ import cors from "cors";
 import type { Request, Response } from "express";
 import { connectDb } from "./config/db";
 import { User } from "./models/user.model";
+import { Interview } from "./models/interview.model";
+import { Profile } from "./models/profile.model";
 import { routes } from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 
 export const initDb = async () => {
   await connectDb();
   await User.init();
+  await Interview.init();
+  await Profile.init();
 };
 
 const app = express();
